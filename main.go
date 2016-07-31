@@ -53,11 +53,11 @@ func main() {
 		verb := os.Args[1]
 		switch verb {
 		case "install":
-			/*err = register()
+			err = register()
 			if err != nil {
 				fmt.Printf("Failed to register: %s\n", err)
 				return
-			}*/
+			}
 
 			err = s.Install()
 			if err != nil {

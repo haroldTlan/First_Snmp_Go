@@ -36,13 +36,13 @@ func Serve() {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/version", web.JsonResponse(replyVersion)).Methods("GET")
 	router.HandleFunc("/api/sn", web.JsonResponse(replySN)).Methods("GET")
-	fmt.Println("step0\n")
-	fmt.Println(c.License)
-	fmt.Println(c.License != "")
+
+	//if c.License != "" {
 	if true {
 		fmt.Println("step1\n")
 		sn, err := GetSerialNum()
-		fmt.Println(err)
+		_ = err//not used
+		//if err == nil {
 		if true {
 			hash := md5.New()
 			io.WriteString(hash, sn)
@@ -56,10 +56,14 @@ func Serve() {
 			var sig []byte
 			//sig := make([]byte, len(c.License))
 			_, err := fmt.Sscanf(c.License, "%x", &sig)
-			fmt.Println(err)
+			_ = err//not used
+			//if err == nil {
 			if true {
-				fmt.Println(pubKey,h,hashed)
+				_ = pubKey//not used
+				_ = h//not used
+				_ = hashed//not used
 				//err := rsa.VerifyPKCS1v15(pubKey, h, hashed, sig)
+				//if err == nil {
 				if true {
 					router.HandleFunc("/api/sessions", web.JsonResponse(createSession)).Methods("POST")
 					router.HandleFunc("/api/machines/{uuid}/disks", web.JsonResponse(getDisksOfMachine)).Methods("GET")
