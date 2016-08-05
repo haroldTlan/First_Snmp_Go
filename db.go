@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/astaxie/beedb"
 	_ "github.com/ziutek/mymysql/godrv"
 	"time"
+	"fmt"
 )
 
 /*
@@ -28,7 +28,6 @@ CREATE TABLE `machine` (
 */
 
 var orm beedb.Model
-
 /*
 type Disk struct {
 	Uid        int `beedb:"PK"`
@@ -38,37 +37,38 @@ type Disk struct {
 	Created    time.Time `orm:"index"`
 }*/
 
-type Disk struct { //the table'name is disk
-	Uid                  int `beedb:"PK"`
-	Uuid                 string
-	Location             string
-	MachineId            string
-	Created              time.Time `orm:"index"`
-	Status               string
-	Role                 string
-	Raid                 string
-	Size                 string
-	RawReadErrorRate     string
-	SpinUpTime           string
-	StartStopCount       string
-	ReallocatedSectorCt  string
-	SeekErrorRate        string
-	PowerOnHours         string
-	SpinRetryCount       string
-	PowerCycleCount      string
-	PowerOffRetractCount string
-	LoadCycleCount       string
-	CurrentPendingSector string
-	OfflineUncorrectable string
-	UDMACRCErrorCount    string
+type Disk struct {			//the table'name is disk
+	Uid         int `beedb:"PK"`
+	Uuid        string
+	Location    string
+	MachineId   string
+	Created     time.Time `orm:"index"`
+	Status		string
+	Role		string
+	Raid		string
+	Size		string
+	RawReadErrorRate 		string
+	SpinUpTime				string
+	StartStopCount			string
+	ReallocatedSectorCt		string
+	SeekErrorRate			string
+	PowerOnHours			string
+	SpinRetryCount			string
+	PowerCycleCount			string
+	PowerOffRetractCount	string
+	LoadCycleCount			string
+	CurrentPendingSector	string
+	OfflineUncorrectable	string
+	UDMACRCErrorCount		string
+	
 }
 
 type Machine struct {
-	Uid     int `beedb:"PK"`
-	Uuid    string
-	Ip      string
-	Slotnr  int
-	Created time.Time `orm:"index"`
+	Uid        int `beedb:"PK"`
+	Uuid       string
+	Ip         string
+	Slotnr     int
+	Created    time.Time `orm:"index"`
 }
 
 func Initdb() {
@@ -82,19 +82,19 @@ func Initdb() {
 }
 
 //func InsertdiskInfo(uuid string, location string, machineId string, RawReadErrorRate string, SpinUpTime string, StartStopCount string, ReallocatedSectorCt string, SeekErrorRate string, PowerOnHours string, SpinRetryCount string, PowerCycleCount string, PowerOffRetractCount string, LoadCycleCount string, CurrentPendingSector string, OfflineUncorrectable string, UDMACRCErrorCount string) error{
-func InsertSmartInfo(uuid, location, machineId, RawReadErrorRate, SpinUpTime, StartStopCount, ReallocatedSectorCt, SeekErrorRate, PowerOnHours, SpinRetryCount, PowerCycleCount, PowerOffRetractCount, LoadCycleCount, CurrentPendingSector, OfflineUncorrectable, UDMACRCErrorCount string) error {
+func InsertSmartInfo(uuid, location, machineId, RawReadErrorRate, SpinUpTime, StartStopCount, ReallocatedSectorCt, SeekErrorRate, PowerOnHours, SpinRetryCount, PowerCycleCount, PowerOffRetractCount, LoadCycleCount, CurrentPendingSector, OfflineUncorrectable, UDMACRCErrorCount string) error{
 
 	fmt.Printf("Insert smartInfo start\n")
-	//fmt.Printf("@@@",uuid, location, machineId, RawReadErrorRate, SpinUpTime, StartStopCount, ReallocatedSectorCt, SeekErrorRate, PowerOnHours, SpinRetryCount, PowerCycleCount, PowerOffRetractCount, LoadCycleCount, CurrentPendingSector, OfflineUncorrectable, UDMACRCErrorCount )
+	fmt.Printf("@@@",uuid, location, machineId, RawReadErrorRate, SpinUpTime, StartStopCount, ReallocatedSectorCt, SeekErrorRate, PowerOnHours, SpinRetryCount, PowerCycleCount, PowerOffRetractCount, LoadCycleCount, CurrentPendingSector, OfflineUncorrectable, UDMACRCErrorCount )
 	var disk Disk
 	disk.Uuid = uuid
 	disk.Location = location
 	disk.MachineId = machineId
 	disk.Created = time.Now()
-	//disk.Status	= ""
-	//disk.Role	= ""
-	//disk.Raid	= ""
-	//disk.Size	= ""
+	disk.Status	= ""
+	disk.Role	= ""
+	disk.Raid	= ""
+	disk.Size	= ""
 	disk.RawReadErrorRate = RawReadErrorRate
 	disk.SpinUpTime = SpinUpTime
 	disk.StartStopCount = StartStopCount
@@ -108,7 +108,7 @@ func InsertSmartInfo(uuid, location, machineId, RawReadErrorRate, SpinUpTime, St
 	disk.CurrentPendingSector = CurrentPendingSector
 	disk.OfflineUncorrectable = OfflineUncorrectable
 	disk.UDMACRCErrorCount = UDMACRCErrorCount
-
+	
 	if err := orm.Save(&disk); err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func InsertSmartInfo(uuid, location, machineId, RawReadErrorRate, SpinUpTime, St
 	return nil
 }
 
-func InsertDisk(uuid string, location string, machineId string) error {
+func InsertDisk(uuid string, location string, machineId string) error{
 	var disk Disk
 	disk.Uuid = uuid
 	disk.Location = location
@@ -132,7 +132,6 @@ func InsertDisk(uuid string, location string, machineId string) error {
 func SelectDisksOfMachine(uuid string) ([]Disk, error) {
 	var ones []Disk
 	if err := orm.Where("MachineId=?", uuid).FindAll(&ones); err != nil {
-		//select *,count(distinct uuid) from disk group by uuid;
 		return ones, err
 	}
 	return ones, nil
@@ -147,7 +146,7 @@ func SelectAllDisks() ([]Disk, error) {
 	return ones, nil
 }
 
-func SelectDisk(uuid string) (Disk, error) {
+func SelectDisk(uuid string) (Disk, error){
 	var one Disk
 	if err := orm.Where("Uuid=?", uuid).Find(&one); err != nil {
 		return one, err
@@ -155,24 +154,20 @@ func SelectDisk(uuid string) (Disk, error) {
 	return one, nil
 }
 
-func UpdateDisk(uuid string, location string, machineId string, status string, role string, raid string, size string) error {
+func UpdateDisk(uuid string, location string, machineId string) error{
 	// //update data
 	saveone, _ := SelectDisk(uuid)
 	saveone.Uuid = uuid
 	saveone.Location = location
 	saveone.MachineId = machineId
 	saveone.Created = time.Now()
-	saveone.Status = status
-	saveone.Role = role
-	saveone.Raid = raid
-	saveone.Size = size
 	if err := orm.Save(&saveone); err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteDisk(uuid string) error {
+func DeleteDisk(uuid string) error{
 	// // //delete one data
 	if _, err := orm.SetTable("disk").Where("uuid=?", uuid).DeleteRow(); err != nil {
 		return err
@@ -181,7 +176,7 @@ func DeleteDisk(uuid string) error {
 	return nil
 }
 
-func DeleteAllDisks() error {
+func DeleteAllDisks() error{
 	// //delete all data
 	alldisks, err := SelectAllDisks()
 	if err != nil {
@@ -194,7 +189,9 @@ func DeleteAllDisks() error {
 	return nil
 }
 
-func InsertMachine(uuid string, ip string, slotnr int) error {
+
+
+func InsertMachine(uuid string, ip string, slotnr int) error{
 	var one Machine
 	one.Uuid = uuid
 	one.Ip = ip
@@ -207,7 +204,7 @@ func InsertMachine(uuid string, ip string, slotnr int) error {
 	return nil
 }
 
-func SelectAllMachines() ([]Machine, error) {
+func SelectAllMachines() ([]Machine, error){
 	//get all data
 	var ones []Machine
 	if err := orm.FindAll(&ones); err != nil {
@@ -216,7 +213,7 @@ func SelectAllMachines() ([]Machine, error) {
 	return ones, nil
 }
 
-func SelectMachine(uuid string) (Machine, error) {
+func SelectMachine(uuid string) (Machine, error){
 	var one Machine
 	if err := orm.Where("Uuid=?", uuid).Find(&one); err != nil {
 		return one, err
@@ -245,3 +242,5 @@ func UpdateMachine(uuid string, ip string, slotnr int) error {
 	}
 	return nil
 }
+
+

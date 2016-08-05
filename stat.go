@@ -3,7 +3,7 @@ package main
 import (
 	"hwraid/topic"
 	"time"
-
+	
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
@@ -45,9 +45,9 @@ func ServeStat() {
 				stat.Mem = 0
 			}
 			stat.Mem = prettyFloat(vm.UsedPercent)
-
+			
 			stat.Temp = 40
-
+			
 			nstats, err := net.NetIOCounters(false)
 			if err != nil {
 				nstats = lastNStats

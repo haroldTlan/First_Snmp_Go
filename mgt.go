@@ -5,16 +5,16 @@ import (
 	"crypto/md5"
 	"crypto/rsa"
 	"fmt"
-	"github.com/gorilla/mux"
-	"io"
 	"math/big"
 	"net/http"
+	"io"
 	"snmpserver/cfg"
 	"snmpserver/web"
+	"github.com/gorilla/mux"
 	"strconv"
 
 	"net"
-	"strings"
+	"strings"	
 )
 
 type Session struct {
@@ -37,13 +37,10 @@ func Serve() {
 	router.HandleFunc("/api/version", web.JsonResponse(replyVersion)).Methods("GET")
 	router.HandleFunc("/api/sn", web.JsonResponse(replySN)).Methods("GET")
 
-	//if c.License != "" {
-	if true {
+	if c.License != "" {
 		fmt.Println("step1\n")
 		sn, err := GetSerialNum()
-		_ = err//not used
-		//if err == nil {
-		if true {
+		if err == nil {
 			hash := md5.New()
 			io.WriteString(hash, sn)
 			hashed := hash.Sum(nil)
@@ -56,22 +53,16 @@ func Serve() {
 			var sig []byte
 			//sig := make([]byte, len(c.License))
 			_, err := fmt.Sscanf(c.License, "%x", &sig)
-			_ = err//not used
-			//if err == nil {
-			if true {
-				_ = pubKey//not used
-				_ = h//not used
-				_ = hashed//not used
-				//err := rsa.VerifyPKCS1v15(pubKey, h, hashed, sig)
-				//if err == nil {
-				if true {
+			if err == nil {
+				err := rsa.VerifyPKCS1v15(pubKey, h, hashed, sig)
+				if err != nil {
 					router.HandleFunc("/api/sessions", web.JsonResponse(createSession)).Methods("POST")
 					router.HandleFunc("/api/machines/{uuid}/disks", web.JsonResponse(getDisksOfMachine)).Methods("GET")
 					router.HandleFunc("/api/machines", web.JsonResponse(addMachines)).Methods("POST")
 					router.HandleFunc("/api/machines", web.JsonResponse(getMachines)).Methods("GET")
 					router.HandleFunc("/api/ifaces", web.JsonResponse(getIfaces)).Methods("GET")
-					router.HandleFunc("/api/systeminfo", web.JsonResponse(getSysteminfo)).Methods("GET")
-
+					router.HandleFunc("/api/systeminfo", web.JsonResponse(getSysteminfo)).Methods("GET")					
+					
 					fmt.Println("step2\n")
 				}
 			}
@@ -81,19 +72,20 @@ func Serve() {
 	ServeStat()
 	TrapServer()
 	Rundb()
-
+	
 	sio := NewSocketIOServer()
 	sio.Handle("/", router)
 	http.ListenAndServe(":8080", sio)
 }
 
+
 func getIfaces(w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	info, _ := net.InterfaceAddrs()
 	ifaces := make([]string, 0)
-	for _, addr := range info {
+	for _, addr := range info{
 		ifaces = append(ifaces, strings.Split(addr.String(), "/")[0])
 	}
-
+	
 	//addLogtoChan("getIfaces", nil, false)
 	return ifaces, nil
 }
@@ -138,8 +130,8 @@ func getDisksOfMachine(w http.ResponseWriter, r *http.Request) (interface{}, err
 
 	vars := mux.Vars(r)
 	uuid := vars["uuid"]
-
-	machine, err := SelectMachine(uuid)
+	
+	machine, err := SelectMachine(uuid);
 	if err != nil {
 		return nil, nil
 	}
@@ -147,6 +139,9 @@ func getDisksOfMachine(w http.ResponseWriter, r *http.Request) (interface{}, err
 	RefreshDisks(machine.Ip, uuid)
 	//RefreshDisks("192.168.2.132", uuid)
 	disks, _ := SelectDisksOfMachine(uuid)
+	fmt.Println("disks")
+	fmt.Println(disks)
+	fmt.Println(nil)
 	return disks, nil
 }
 
@@ -162,3 +157,4 @@ func replySN(w http.ResponseWriter, r *http.Request) (interface{}, error) {
 		return map[string]string{"sn": sn}, nil
 	}
 }
+

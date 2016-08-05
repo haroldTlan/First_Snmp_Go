@@ -74,7 +74,7 @@ func main() {
 			fmt.Printf("Service \"%s\" removed.\n", displayName)
 		case "run":
 			Serve()
-
+			
 		case "start":
 			err = s.Start()
 			if err != nil {
