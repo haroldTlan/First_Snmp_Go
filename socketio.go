@@ -28,7 +28,7 @@ func NewSocketIOServer() *socketio.SocketIOServer {
 			}
 		}(ns)
 	})
-	
+
 	sio.Of("/statistics").On("connect", func(ns *socketio.NameSpace) {
 		go func(ns *socketio.NameSpace) {
 			sub := statTopic.Subscribe()
@@ -43,7 +43,7 @@ func NewSocketIOServer() *socketio.SocketIOServer {
 
 				err = ns.Emit("statistics", bytes)*/
 				//m := map[string]interface{}{"status": "ok", "sample": stat}
-				
+
 				//ms,err := json.Marshal(m)
 				err := ns.Emit("statistics", stat)
 				if err != nil {
@@ -51,7 +51,7 @@ func NewSocketIOServer() *socketio.SocketIOServer {
 				}
 			}
 		}(ns)
-	})		
-	
+	})
+
 	return sio
 }

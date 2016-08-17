@@ -6,7 +6,7 @@ import (
 )
 
 //<config>
-//	<server ipaddr="127.0.0.1" port="8080"/>
+//	<server ipaddr="127.0.0.1" port="8008"/>
 //  <license>
 //    abc
 //	</license>
@@ -53,7 +53,7 @@ func TestMarshalConfig(t *testing.T) {
 	var v Config
 	v.Server = &Server{}
 	v.Server.Ipaddr = "127.0.0.1"
-	v.Server.Port = 8080
+	v.Server.Port = 8008
 	v.License = "123456"
 
 	o, err := xml.MarshalIndent(&v, "", "    ")
